@@ -1,0 +1,22 @@
+[2025-11-26 14:03:18] Server starting
+[2025-11-26 14:03:18] Worker 0 started
+[2025-11-26 14:03:18] Worker 2 started
+[2025-11-26 14:03:18] Worker 1 started
+[2025-11-26 14:03:18] Worker 3 started
+[2025-11-26 14:03:19] Worker 1: New connection accepted (fd: 4)
+[2025-11-26 14:03:19] Worker 1: New connection accepted (fd: 5)
+[2025-11-26 14:03:19] Worker 1: New connection accepted (fd: 6)
+[2025-11-26 14:05:32] Server starting
+[2025-11-26 14:05:32] Worker 0 started
+[2025-11-26 14:05:32] Worker 1 started
+[2025-11-26 14:05:32] Worker 2 started
+[2025-11-26 14:05:32] Worker 3 started
+[2025-11-26 14:05:37] Server starting
+[2025-11-26 14:05:37] Worker 0 started
+[2025-11-26 14:05:37] Worker 1 started
+[2025-11-26 14:05:37] Worker 2 started
+[2025-11-26 14:05:37] Worker 3 started
+[2025-11-26 14:05:43] Worker 2: New connection accepted (fd: 4)
+[2025-11-26 14:05:43] Worker 2: New connection accepted (fd: 5)
+[2025-11-26 14:05:43] Worker 3: New connection accepted (fd: 4)
+[2025-11-26 14:05:53] Worker 3: New connection accepted (fd: 5)
