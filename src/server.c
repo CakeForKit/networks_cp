@@ -37,6 +37,12 @@ typedef struct {
     int max_clients;
 } worker_data_t;
 
+// Создание необходимых директорий
+void create_directories() {
+    mkdir("logs", 0755);
+    mkdir("static", 0755);
+}
+
 // Функции для логирования
 void log_message(const char *message) {
     FILE *log_file = fopen(LOG_FILE, "a");
@@ -62,6 +68,8 @@ const char* get_status_message(int status_code) {
         case 403: return "Forbidden";
         case 404: return "Not Found";
         case 405: return "Method Not Allowed";
+        case 414: return "URI Too Long";
+        case 400: return "Bad Request";
         default: return "Unknown";
     }
 }
@@ -79,10 +87,6 @@ void send_response(int client_fd, int status_code, const char* content_type, off
         content_type, (long)content_length);
     
     send(client_fd, header, header_len, 0);
-    
-    if (!is_head && status_code == 200 && content_length > 0) {
-        // Данные файла будут отправлены отдельно
-    }
 }
 
 void send_error(int client_fd, int status_code, int is_head) {
@@ -129,14 +133,19 @@ int is_safe_path(const char* path) {
 }
 
 void handle_request(client_t *client, const char* request) {
+    printf("DEBUG: Handling request: %s\n", request);
+    
     char method[16], path[MAX_PATH_LENGTH], protocol[16];
     int is_head = 0;
     
     // Парсинг HTTP запроса
     if (sscanf(request, "%15s %2047s %15s", method, path, protocol) != 3) {
+        printf("DEBUG: Failed to parse request\n");
         send_error(client->fd, 400, 0);
         return;
     }
+    
+    printf("DEBUG: Parsed: method=%s, path=%s, protocol=%s\n", method, path, protocol);
     
     // Проверка поддерживаемых методов
     if (strcmp(method, "GET") == 0) {
@@ -161,13 +170,30 @@ void handle_request(client_t *client, const char* request) {
         strcpy(path, "/index.html");
     }
     
-    // Формирование полного пути к файлу
+    // Формирование полного пути к файлу - ИСПРАВЛЕНО: ищем в static/
     char full_path[MAX_PATH_LENGTH];
-    snprintf(full_path, sizeof(full_path) + 3, ".%s", path);
+    size_t path_len = strlen(path);
+    
+    // Проверка что путь не слишком длинный
+    if (path_len + 10 >= sizeof(full_path)) { // +10 для "./static"
+        send_error(client->fd, 414, is_head);
+        log_request(method, path, 414);
+        return;
+    }
+    
+    // ИСПРАВЛЕНИЕ: ищем файлы в папке static/
+    if (snprintf(full_path, sizeof(full_path), "./static%s", path) >= (int)sizeof(full_path)) {
+        send_error(client->fd, 414, is_head);
+        log_request(method, path, 414);
+        return;
+    }
+    
+    printf("Looking for file: %s\n", full_path); // Debug output
     
     // Проверка существования файла и прав доступа
     struct stat file_stat;
     if (stat(full_path, &file_stat) == -1) {
+        printf("File not found: %s (errno: %d)\n", full_path, errno); // Debug
         send_error(client->fd, 404, is_head);
         log_request(method, path, 404);
         return;
@@ -214,13 +240,24 @@ void handle_request(client_t *client, const char* request) {
     }
     
     log_request(method, path, 200);
+    printf("Serving file: %s (%ld bytes)\n", full_path, file_stat.st_size); // Debug
 }
 
+// Остальные функции без изменений...
 void process_client_data(client_t *client) {
+    printf("DEBUG: Reading data from client fd: %d\n", client->fd);
+    
     ssize_t bytes_read = recv(client->fd, client->buffer + client->buffer_len, 
                              BUFFER_SIZE - client->buffer_len - 1, 0);
     
+    printf("DEBUG: recv returned: %zd\n", bytes_read);
+    
     if (bytes_read <= 0) {
+        if (bytes_read == 0) {
+            printf("DEBUG: Client disconnected\n");
+        } else {
+            printf("DEBUG: recv error: %s\n", strerror(errno));
+        }
         client->keep_alive = 0;
         return;
     }
@@ -228,9 +265,12 @@ void process_client_data(client_t *client) {
     client->buffer_len += bytes_read;
     client->buffer[client->buffer_len] = '\0';
     
+    printf("DEBUG: Received %zd bytes: %.*s\n", bytes_read, (int)bytes_read, client->buffer);
+    
     // Поиск конца заголовков
     char *header_end = strstr(client->buffer, "\r\n\r\n");
     if (header_end) {
+        printf("DEBUG: Found end of headers\n");
         *header_end = '\0';
         handle_request(client, client->buffer);
         
@@ -243,6 +283,8 @@ void process_client_data(client_t *client) {
         } else {
             client->buffer_len = 0;
         }
+    } else {
+        printf("DEBUG: Incomplete headers, waiting for more data\n");
     }
 }
 
@@ -270,7 +312,7 @@ void send_file_data(client_t *client) {
     if (client->bytes_sent >= client->file_size) {
         close(client->file_fd);
         client->file_fd = -1;
-        client->keep_alive = 0; // Закрываем соединение после отправки
+        client->keep_alive = 0;
     }
 }
 
@@ -291,13 +333,11 @@ void worker_process(int server_fd, int worker_id) {
     worker_data.fds = calloc(worker_data.max_clients + 1, sizeof(struct pollfd));
     worker_data.num_clients = 0;
     
-    // Инициализация клиентов
     for (int i = 0; i < worker_data.max_clients; i++) {
         worker_data.clients[i].fd = -1;
         worker_data.clients[i].file_fd = -1;
     }
     
-    // Добавление server socket в poll
     worker_data.fds[0].fd = server_fd;
     worker_data.fds[0].events = POLLIN;
     worker_data.num_clients = 1;
@@ -305,6 +345,7 @@ void worker_process(int server_fd, int worker_id) {
     char log_msg[64];
     snprintf(log_msg, sizeof(log_msg), "Worker %d started", worker_id);
     log_message(log_msg);
+    printf("Worker %d started\n", worker_id);
     
     while (1) {
         int ready = poll(worker_data.fds, worker_data.num_clients, -1);
@@ -315,14 +356,12 @@ void worker_process(int server_fd, int worker_id) {
             break;
         }
         
-        // Проверка новых подключений
         if (worker_data.fds[0].revents & POLLIN) {
             struct sockaddr_in client_addr;
             socklen_t client_len = sizeof(client_addr);
             int client_fd = accept(server_fd, (struct sockaddr*)&client_addr, &client_len);
             
             if (client_fd != -1) {
-                // Поиск свободного слота для клиента
                 int client_index = -1;
                 for (int i = 1; i < worker_data.max_clients; i++) {
                     if (worker_data.clients[i].fd == -1) {
@@ -342,20 +381,32 @@ void worker_process(int server_fd, int worker_id) {
                     worker_data.fds[worker_data.num_clients].events = POLLIN;
                     worker_data.num_clients++;
                     
-                    char log_msg[128];
-                    snprintf(log_msg, sizeof(log_msg), 
-                            "Worker %d: New connection accepted (fd: %d)", worker_id, client_fd);
-                    log_message(log_msg);
+                    printf("Worker %d: New connection (fd: %d)\n", worker_id, client_fd);
                 } else {
                     close(client_fd);
                 }
             }
         }
         
-        // Обработка клиентов
         for (int i = 1; i < worker_data.num_clients; i++) {
             if (worker_data.fds[i].revents & (POLLIN | POLLOUT)) {
-                client_t *client = &worker_data.clients[i-1];
+                // Находим соответствующий клиентский слот
+                int client_index = -1;
+                for (int j = 0; j < worker_data.max_clients; j++) {
+                    if (worker_data.clients[j].fd == worker_data.fds[i].fd) {
+                        client_index = j;
+                        break;
+                    }
+                }
+                
+                if (client_index == -1) {
+                    printf("ERROR: No client found for fd: %d\n", worker_data.fds[i].fd);
+                    continue;
+                }
+                
+                client_t *client = &worker_data.clients[client_index];
+                
+                printf("DEBUG: Processing client fd: %d (index: %d)\n", client->fd, client_index);
                 
                 if (worker_data.fds[i].revents & POLLIN) {
                     process_client_data(client);
@@ -365,16 +416,13 @@ void worker_process(int server_fd, int worker_id) {
                     send_file_data(client);
                 }
                 
-                // Обновление событий poll
                 worker_data.fds[i].events = POLLIN;
                 if (client->file_fd != -1 && client->bytes_sent < client->file_size) {
                     worker_data.fds[i].events |= POLLOUT;
                 }
                 
-                // Закрытие соединения
                 if (!client->keep_alive) {
                     cleanup_client(client);
-                    // Удаление из массива poll
                     worker_data.fds[i] = worker_data.fds[worker_data.num_clients - 1];
                     worker_data.num_clients--;
                     i--;
@@ -421,10 +469,10 @@ int create_server_socket(int port) {
 }
 
 void create_static_content() {
-    // Создание директории для статического контента
-    mkdir("static", 0755);
+    // Создание директорий
+    create_directories();
     
-    // index.html
+    // index.html (без изменений)
     FILE *html_file = fopen("static/index.html", "w");
     if (html_file) {
         const char *html_content = 
@@ -482,9 +530,10 @@ void create_static_content() {
             "</html>";
         fwrite(html_content, 1, strlen(html_content), html_file);
         fclose(html_file);
+        printf("Created static/index.html\n");
     }
     
-    // style.css
+    // style.css (без изменений)
     FILE *css_file = fopen("static/style.css", "w");
     if (css_file) {
         const char *css_content = 
@@ -626,6 +675,7 @@ void create_static_content() {
             "}";
         fwrite(css_content, 1, strlen(css_content), css_file);
         fclose(css_file);
+        printf("Created static/style.css\n");
     }
     
     // test.txt
@@ -636,12 +686,8 @@ void create_static_content() {
             "Сервер успешно работает и отдает статический контент!\n";
         fwrite(test_content, 1, strlen(test_content), test_file);
         fclose(test_file);
+        printf("Created static/test.txt\n");
     }
-    
-    // Создание симлинков для корневой директории
-    // symlink("static/index.html", "index.html");
-    // symlink("static/style.css", "style.css");
-    // symlink("static/test.txt", "test.txt");
 }
 
 int main(int argc, char *argv[]) {
@@ -660,6 +706,7 @@ int main(int argc, char *argv[]) {
     printf("Architecture: prefork + poll()\n");
     printf("Workers: %d\n", MAX_WORKERS);
     printf("Max connections: %d\n", MAX_CONNECTIONS);
+    printf("Static files in: ./static/\n");
     
     log_message("Server starting");
     
@@ -678,6 +725,8 @@ int main(int argc, char *argv[]) {
             exit(1);
         }
     }
+    
+    printf("Server ready! Access at: http://localhost:%d/\n", port);
     
     // Ожидание завершения worker процессов
     while (wait(NULL) > 0);
