@@ -1,0 +1,6 @@
+.vscode
+tmp_*
+*.o
+*.d
+*.exe
+static/secret.txt
