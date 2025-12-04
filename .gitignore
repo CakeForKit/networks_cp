@@ -4,3 +4,4 @@ tmp_*
 *.d
 *.exe
 static/secret.txt
+static/bigfile.txt
