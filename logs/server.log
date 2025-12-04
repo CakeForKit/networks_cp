@@ -2774,3 +2774,64 @@
 [2025-12-04 23:44:26] Error response sent: 404 Not Found
 [2025-12-04 23:44:26] GET /qweqwe - 404
 [2025-12-04 23:44:26] Processing client fd: 4 (index: 1, events: 1)
+[2025-12-04 23:51:28] Server starting
+[2025-12-04 23:51:28] Worker 0 started
+[2025-12-04 23:51:28] Worker 1 started
+[2025-12-04 23:51:28] Worker 3 started
+[2025-12-04 23:51:28] Worker 2 started
+[2025-12-04 23:51:31] Worker 2: New connection accepted (fd: 4, total: 1)
+[2025-12-04 23:51:31] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:51:31] Request received: GET / HTTP/1.1
+[2025-12-04 23:51:31] Full_path: ./static/index.html
+[2025-12-04 23:51:31] GET /index.html - 200
+[2025-12-04 23:51:31] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:51:31] Worker 3: New connection accepted (fd: 4, total: 1)
+[2025-12-04 23:51:31] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:51:31] Request received: GET /style.css HTTP/1.1
+[2025-12-04 23:51:31] Full_path: ./static/style.css
+[2025-12-04 23:51:31] GET /style.css - 200
+[2025-12-04 23:51:31] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:51:31] Worker 3: New connection accepted (fd: 4, total: 1)
+[2025-12-04 23:51:31] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:51:36] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:51:36] Request received: GET /test.txt HTTP/1.1
+[2025-12-04 23:51:36] Full_path: ./static/test.txt
+[2025-12-04 23:51:36] Error response sent: 404 Not Found
+[2025-12-04 23:51:36] GET /test.txt - 404
+[2025-12-04 23:51:36] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:51:36] Worker 3: New connection accepted (fd: 4, total: 1)
+[2025-12-04 23:51:36] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:51:42] Request received: GET /image.jpg HTTP/1.1
+[2025-12-04 23:51:42] Full_path: ./static/image.jpg
+[2025-12-04 23:51:42] Error response sent: 404 Not Found
+[2025-12-04 23:51:42] GET /image.jpg - 404
+[2025-12-04 23:51:42] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:51:43] Worker 3: New connection accepted (fd: 4, total: 1)
+[2025-12-04 23:51:43] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:52:08] Request received: GET /test.txt HTTP/1.1
+[2025-12-04 23:52:08] Full_path: ./static/test.txt
+[2025-12-04 23:52:08] GET /test.txt - 200
+[2025-12-04 23:52:08] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:08] Worker 2: New connection accepted (fd: 4, total: 1)
+[2025-12-04 23:52:08] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 1)
+[2025-12-04 23:52:51] Request received: GET /image.jpg HTTP/1.1
+[2025-12-04 23:52:51] Full_path: ./static/image.jpg
+[2025-12-04 23:52:51] GET /image.jpg - 200
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:51] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
+[2025-12-04 23:52:52] Worker 2: New connection accepted (fd: 4, total: 1)
+[2025-12-04 23:52:52] Processing client fd: 4 (client_index: 1, pollfd.revents: 4)
