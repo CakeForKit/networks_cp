@@ -1,0 +1,171 @@
+\usepackage{cmap} 
+\usepackage{tempora} 
+\usepackage[T2A]{fontenc} 
+\usepackage[utf8]{inputenc} 
+\usepackage[english,russian]{babel} 
+\usepackage{pdfpages} 
+\usepackage{placeins} 
+\usepackage[figure,table]{totalcount} 
+\usepackage{lastpage} 
+\usepackage{url}
+\usepackage{xurl}
+\urlstyle{same}
+
+\usepackage{amssymb,amsfonts,amsmath,mathtext,float} % cite
+\usepackage{letltxmacro} 
+\usepackage{flafter} 
+
+\usepackage[backend=biber, style=gost-numeric-inline]{biblatex}
+\addbibresource{lib.bib}
+
+\pdfcompresslevel=0
+\pdfobjcompresslevel=0
+%\pdfoptionpdfminorversion 7
+
+\usepackage{geometry}
+\geometry{left=30mm}
+\geometry{right=15mm}
+\geometry{top=20mm}
+\geometry{bottom=20mm}
+
+\setlength{\parindent}{1.25cm}
+
+\usepackage{microtype}
+\sloppy	
+
+\usepackage{setspace}
+\onehalfspacing 
+
+\frenchspacing	
+\usepackage{indentfirst} 
+
+
+\makeatletter
+\renewcommand\LARGE{\@setfontsize\LARGE{22pt}{20}}
+\renewcommand\Large{\@setfontsize\Large{20pt}{20}}
+\renewcommand\large{\@setfontsize\large{16pt}{20}}
+\makeatother
+
+\newcommand{\ssr}[1]{\begin{center}
+		\large\bfseries{#1}
+	\end{center} \addcontentsline{toc}{chapter}{#1}  }
+
+
+\usepackage{titlesec}
+\titleformat{\chapter}{\large\bfseries}{\thechapter}{14pt}{\large\bfseries}
+\titleformat{name=\chapter,numberless}{}{}{0pt}{\large\bfseries\centering}	
+\titleformat{\section}{\large\bfseries}{\thesection}{14pt}{\large\bfseries}
+\titleformat{\subsection}{\large\bfseries}{\thesubsection}{14pt}{\large\bfseries}
+
+\titlespacing{\chapter}{12.5mm}{-22pt}{10pt}
+\titlespacing{\section}{12.5mm}{10pt}{10pt}
+\titlespacing{\subsection}{12.5mm}{10pt}{10pt}
+
+\usepackage{longtable} 
+\usepackage{array}    
+\usepackage{caption}
+\captionsetup[longtable]{justification=raggedright, singlelinecheck=off}
+\usepackage{multirow} 
+
+\newcommand{\specialcell}[2][c]{
+	\begin{tabular}[#1]{@{}c@{}}#2\end{tabular}}
+
+
+\usepackage{enumerate} 
+
+
+\usepackage{enumitem}
+\def\labelitemi{---}
+\setlist[itemize]{leftmargin=1.25cm, itemindent=0.65cm}
+\setlist[enumerate]{leftmargin=1.25cm, itemindent=0.55cm}
+
+\captionsetup{labelsep=endash}
+\captionsetup[figure]{name={Рисунок}, justification=centering}
+
+
+\usepackage{graphicx}
+\newcommand{\imgScale}[3] {
+	\begin{figure}[h!]
+		\center{\includegraphics[scale=#1]{img/#2}} 
+		\caption{#3}
+		\label{img:#2}
+	\end{figure}
+}
+
+\newcommand{\imgh}[3] {
+	\begin{figure}[h!]
+		\center{\includegraphics[height=#1]{img/#2}}
+		\caption{#3}
+		\label{img:#2}
+	\end{figure}
+}
+\newcommand{\imgw}[3] {
+	\begin{figure}[h!]
+		\center{\includegraphics[width=#1]{img/#2}}
+		\caption{#3}
+		\label{img:#2}
+	\end{figure}
+}
+\newcommand{\boximg}[3] {
+	\begin{figure}[h]
+		\center{\fbox{\includegraphics[height=#1]{img/#2}}}
+		\caption{#3}
+		\label{img:#2}
+	\end{figure}
+}
+
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{
+	basicstyle=\small\ttfamily,
+	frame=single,
+	captionpos=b,
+	breaklines=true,
+	tabsize=4
+}
+
+\newcommand{\dlr}{\mbox{\textdollar}}
+
+
+
+\makeatletter
+\renewcommand{\@biblabel}[1]{#1.}
+\makeatother
+
+
+\usepackage[unicode,pdftex]{hyperref}
+\hypersetup{hidelinks}  
+
+\usepackage{cleveref}
+
+\makeatletter
+\renewcommand*{\l@chapter}[2]{
+	\ifnum \c@tocdepth>\m@ne
+	\addpenalty{-\@highpenalty}
+	\vskip 1em \@plus.2em
+	\@dottedtocline{0}{0pt}{1.5em}{\bfseries #1}{\bfseries #2}
+	\fi
+}
+\makeatother
+
+
+\usepackage{listings}
+\usepackage{xcolor}
+\lstset{ %
+	language=C++,                 % выбор языка для подсветки (здесь это С++)
+	basicstyle=\small\sffamily, % размер и начертание шрифта для подсветки кода
+	showspaces=false,            % показывать или нет пробелы специальными отступами
+	showstringspaces=false,      % показывать или нет пробелы в строках
+	showtabs=false,             % показывать или нет табуляцию в строках
+	frame=single,              % рисовать рамку вокруг кода
+	tabsize=2,                 % размер табуляции по умолчанию равен 2 пробелам
+	captionpos=t,              % позиция заголовка вверху [t] или внизу [b] 
+	breaklines=true,           % автоматически переносить строки (да\нет)
+	breakatwhitespace=false, % переносить строки только если есть пробел
+	escapeinside={\#*}{*)} ,  % если нужно добавить комментарии в коде
+	keywordstyle=\color{purple},          % Стиль ключевых слов
+	commentstyle=\color{dkgreen},       % Стиль комментариев
+	stringstyle=\color{mauve}          % Стиль литералов
+}

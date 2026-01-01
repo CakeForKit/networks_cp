@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Статический файловый сервер</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Добро пожаловать на файловый сервер</h1>
+            <p>Architecture: prefork + poll()</p>
+        </header>
+        
+        <main>
+            <section class="features">
+                <h2>Возможности сервера</h2>
+                <ul>
+                    <li>Поддержка HTTP методов GET и HEAD</li>
+                    <li>Отдача файлов до 128 МБ</li>
+                    <li>Мультиплексирование с помощью poll()</li>
+                    <li>Prefork архитектура</li>
+                    <li>Защита от path traversal атак</li>
+                    <li>Логирование всех запросов</li>
+                </ul>
+            </section>
+            
+            <section class="demo">
+                <h2>Демонстрация работы</h2>
+                <div class="demo-grid">
+                    <div class="demo-item">
+                        <h3>Статус сервера</h3>
+                        <div class="status online">Online</div>
+                    </div>
+                    <div class="demo-item">
+                        <h3>Тестовые файлы</h3>
+                        <ul>
+                            <li><a href="/test.txt">test.txt</a></li>
+                            <li><a href="/image.jpg">image.jpg</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Статический файловый сервер &copy; 2024</p>
+        </footer>
+    </div>
+</body>
+</html>

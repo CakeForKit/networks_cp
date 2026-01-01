@@ -1,0 +1,27 @@
+\documentclass[a4paper, 14pt]{extreport}
+
+
+\include{mypreambula}
+
+\begin{document}
+	\includepdf{title.pdf}
+	\includepdf{tz.pdf}
+
+	
+	\setcounter{page}{3}
+	
+	\include{01_referat} 
+	\renewcommand\contentsname{СОДЕРЖАНИЕ}
+	\tableofcontents
+	
+	\include{02_intro}
+	\include{03_analytic_part}
+	\include{04_design_part}
+	\include{05_tech_part}
+	\include{06_experimental_part}
+	\include{07_conclusion}
+	
+	\include{links}
+	
+	\include{08_additions}
+\end{document}
