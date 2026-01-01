@@ -6,3 +6,4 @@ tmp_*
 static/secret.txt
 static/bigfile.txt
 venv
+server/static/bigfile.txt
